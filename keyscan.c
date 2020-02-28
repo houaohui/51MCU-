@@ -1,4 +1,13 @@
+/*-----------------------------
+-----适用于电开的开发板---------
+-----------------------------*/
 #include <stc12c5a60s2.h>
+unsigned char code keycodemap[4][4] = {
+	{ 1, 2, 3, 'u' },
+	{ 4, 5, 6, 'l' },
+	{ 7, 8, 9, 'd' },
+	{ 0, 'e', 'n', 'r' }
+};
 void KeyDriver()
 {
 	unsigned char i, j;
@@ -21,6 +30,7 @@ void KeyDriver()
 		}
 	} 
 }
+
 void keyscan()
 {
 	unsigned char i;
@@ -29,6 +39,15 @@ void keyscan()
 	{0xff,0xff,0xff,0xff},{0xff,0xff,0xff,0xff},
 	{0xff,0xff,0xff,0xff},{0xff,0xff,0xff,0xff}
 	};
+	keyout=keyout&0x03;
+	switch(keyout)
+	{
+		case 0: P2=0x7f;break;
+		case 1: P2=0xbf;break;
+		case 2: P2=0xdf;break;
+		case 3: P2=0xef;break;
+		default:break;
+	}
 	keybuf[keyout][0]=(keybuf[keyout][0]<<1)|P20;
 	keybuf[keyout][1]=(keybuf[keyout][1]<<1)|P21;
 	keybuf[keyout][2]=(keybuf[keyout][2]<<1)|P22;
@@ -45,13 +64,4 @@ void keyscan()
 		}
 	}
 	keyout++;
-	keyout=keyout&0x03;
-	switch(keyout)
-	{
-		case 0: P20=1;P23=0;break;
-		case 1: P23=1;P22=0;break;
-		case 2: P22=1;P21=0;break;
-		case 3: P21=1;P20=0;break;
-		default:break;
-	}
 }
